@@ -24,11 +24,14 @@ class Converter(object):
         self.description1.grid(row=0, column=1, sticky="w")
 
         self.button1 = Button(
-            width=14,
+            activebackground="grey",
+            activeforeground="white",
+            relief="groove",
+            width=20,
             text="PRZELICZ",
             command=self.convert,
         )
-        self.button1.grid(row=1, column=0, sticky="w")
+        self.button1.grid(columnspan=2, row=1, column=0, padx=10, pady=10, sticky="w")
 
         self.field2 = Label()
         self.field2["text"] = "Oto Kwota w USD:"
