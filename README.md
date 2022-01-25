@@ -1,3 +1,3 @@
 # Currency calculator
 
-## Simple calculator which takes an amount of money and calculates it for other currencies
+## Simple calculator that takes an amount in PLN and converts it into other currencies
