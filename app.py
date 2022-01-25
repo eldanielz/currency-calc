@@ -6,6 +6,10 @@ class AmountError(Exception):
     pass
 
 
+class CommaError(Exception):
+    pass
+
+
 class Converter(object):
     def __init__(self):
         self.window = Tk()
@@ -16,7 +20,7 @@ class Converter(object):
         self.window.mainloop()
 
     def build(self):
-        # PLN currency label and entry field
+        # PLN input label and entry field
         self.frame_pln = Frame()
         self.label_pln = Label(
             self.frame_pln, width=15, text="Podaj kwote w PLN:", anchor="w"
@@ -28,6 +32,7 @@ class Converter(object):
 
         self.entry_pln.focus()
 
+        # Converting button
         self.frame_btn = Frame()
         self.button = Button(
             self.frame_btn,
@@ -42,6 +47,7 @@ class Converter(object):
         self.frame_btn.pack(side=TOP, fill=X, padx=30, pady=5)
         self.button.pack(side=LEFT)
 
+        # Creating labels and entries dynamically
         string = "Oto kwota w "
         currencies = ["USD", "EUR", "JPY", "GBP", "AUD", "CAD", "CHF", "SEK"]
         self.labels = []  # creates an empty list for labels
@@ -50,7 +56,7 @@ class Converter(object):
             label_name = string + x + ":"
             row = Frame()
             label = Label(row, width=15, text=label_name, anchor="w")
-            entry = Entry(row, justify="right")
+            entry = Entry(row)
             row.pack(side=TOP, fill=X, padx=5, pady=5)
             label.pack(side=LEFT)
             entry.pack(side=LEFT)
@@ -59,25 +65,38 @@ class Converter(object):
                 entry
             )  # appends the entries to the list for further use
 
+    # Converting function
     def convert(self):
         try:
-            t = float(self.entry_pln.get())
-            if t <= 0:
+            input_value = self.entry_pln.get()
+
+            if "," in input_value:
+                raise CommaError
+
+            input_value = float(input_value)
+
+            if input_value <= 0:
                 raise AmountError
+
         except ValueError:
-            messagebox.showerror("ValueError", "Nieprawidłowy format danych")
+            messagebox.showerror("ValueError", "Nieprawidlowy format danych")
         except AmountError:
-            messagebox.showerror("AmountError", "Kwota nieprawidłowa")
+            messagebox.showerror("AmountError", "Kwota nieprawidlowa")
+        except CommaError:
+            messagebox.showinfo(
+                "CommaError",
+                "Czesc dziesietna oddziel kropka(.) zamiast przecinkiem(,)",
+            )
         else:
             currency_rates = [
-                t / 4.06,
-                t / 4.59,
-                t / 0.036,
-                t / 5.48,
-                t / 2.90,
-                t / 3.22,
-                t / 4.42,
-                t / 0.44,
+                input_value / 4.06,  # USD
+                input_value / 4.59,  # EUR
+                input_value / 0.036,  # JPY
+                input_value / 5.48,  # GBP
+                input_value / 2.90,  # AUD
+                input_value / 3.22,  # CAD
+                input_value / 4.42,  # CHF
+                input_value / 0.44,  # SEK
             ]
 
             for i in range(len(self.entries)):
