@@ -2,6 +2,10 @@ from tkinter import *
 from tkinter import messagebox
 
 
+class AmountError(Exception):
+    pass
+
+
 class Converter(object):
     def __init__(self):
         self.window = Tk()
@@ -83,33 +87,40 @@ class Converter(object):
         self.description9.grid(row=16, column=1, sticky="w")
 
     def convert(self):
-        t = float(self.description1.get())
+        try:
+            t = float(self.description1.get())
+            if t <= 0:
+                raise AmountError
+        except ValueError:
+            messagebox.showerror("ValueError", "Nieprawidłowy format danych")
+        except AmountError:
+            messagebox.showerror("AmountError", "Kwota nieprawidłowa")
+        else:
+            descriptions = [
+                self.description2,
+                self.description3,
+                self.description4,
+                self.description5,
+                self.description6,
+                self.description7,
+                self.description8,
+                self.description9,
+            ]
 
-        descriptions = [
-            self.description2,
-            self.description3,
-            self.description4,
-            self.description5,
-            self.description6,
-            self.description7,
-            self.description8,
-            self.description9,
-        ]
+            currency_rates = [
+                t / 4.06,
+                t / 4.59,
+                t / 0.036,
+                t / 5.48,
+                t / 2.90,
+                t / 3.22,
+                t / 4.42,
+                t / 0.44,
+            ]
 
-        currency_rates = [
-            t / 4.06,
-            t / 4.59,
-            t / 0.036,
-            t / 5.48,
-            t / 2.90,
-            t / 3.22,
-            t / 4.42,
-            t / 0.44,
-        ]
-
-        for i in range(len(descriptions)):
-            descriptions[i].delete(0, END)
-            descriptions[i].insert(0, str(round(currency_rates[i], 2)))
+            for i in range(len(descriptions)):
+                descriptions[i].delete(0, END)
+                descriptions[i].insert(0, str(round(currency_rates[i], 2)))
 
 
 k = Converter()
